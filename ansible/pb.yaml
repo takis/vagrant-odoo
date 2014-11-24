@@ -1,0 +1,28 @@
+- hosts: webservers
+  tags: www
+  remote_user: root
+  tasks:
+    - name: add Odoo repo
+      apt_repository: repo='deb http://nightly.openerp.com/8.0/nightly/deb/ ./' state=present
+    - name: update APT cache
+      apt: update_cache=yes
+    - name: install packages
+      apt: pkg={{ item }} state=installed
+      with_items:
+          - postgresql
+    - name: download recent wkhtmltopdf
+      get_url: url=http://downloads.sourceforge.net/project/wkhtmltopdf/0.12.1/wkhtmltox-0.12.1_linux-wheezy-amd64.deb dest=.
+    - name: install wkhtmltopdf
+      apt: deb=wkhtmltox-0.12.1_linux-wheezy-amd64.deb
+    - name: install packages
+      apt: pkg={{ item }} state=installed force=yes
+      with_items:
+          - odoo
+- hosts: databases
+  tags: sql
+  vars:
+    - dbname: mycompany
+  sudo: yes
+  sudo_user: postgres
+  tasks:
+    - postgresql_db: name={{ dbname }}
