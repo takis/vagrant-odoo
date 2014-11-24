@@ -7,7 +7,5 @@ echo "Installing PostgreSQL"
 apt-get install postgresql -y >/dev/null
 echo "Starting PostgreSQL"
 service postgresql start >/dev/null
-echo "Creating default PostgreSQL database"
-su postgres -s /bin/bash -c "createdb mycompany"
 echo "Installing Odoo"
 apt-get install odoo -f -y --force-yes >/dev/null
